@@ -2,6 +2,7 @@ import openai
 import os
 import json
 import boto3
+from urllib.parse import unquote
 
 def get_response(query):
     s3 = boto3.client('s3',
@@ -29,9 +30,9 @@ def get_response(query):
     
     
 def lambda_handler(event, context):
-    response = get_response(event['pathParameters']['query'])
+    response = get_response(unquote(event['pathParameters']['query']))
     
     return {
         'statusCode': 200,
-        'body': json.dumps(response.strip('\n'))
+        'body': json.dumps(response.replace('\n', ''))
     }
